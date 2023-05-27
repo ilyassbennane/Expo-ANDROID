@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, FlatList } from 'react-native';
 import axios from 'axios';
 import MapView, { Marker } from 'react-native-maps';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -12,7 +12,6 @@ const Header = () => {
     </View>
   );
 };
-
 
 // Footer component
 const Footer = () => {
@@ -32,12 +31,13 @@ export default function App() {
     latitude: 35,
     longitude: 33,
   });
+
   const [totalScore, setTotalScore] = useState(null);
   const [selectedRestaurantAddress, setSelectedRestaurantAddress] = useState('');
   const [selectedRestaurantStreet, setSelectedRestaurantStreet] = useState('');
 
   const mapRef = useRef(null);
-
+  
   const handleCitySelect = (value) => {
     setSelectedCity(value);
     setSelectedZone('');
@@ -136,8 +136,6 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <Header /> 
-
-
       <View style={styles.content} >
         <Text  style={styles.label}>Select a city</Text>
         <DropDownPicker 
@@ -150,30 +148,32 @@ export default function App() {
           defaultValue={selectedCity}
           onChangeValue={(value) => handleCitySelect(value)}
           containerStyle={styles.dropdownContainer}
-          style={styles.dropdown}
           textStyle={styles.dropdownText}
-          arrowColor="#000"
-          zIndex={2000}
-          elevation={3}
+          style={[
+            styles.dropdown,
+            { marginBottom: open ? items.length*40 : 0 } // Set the desired margin bottom values
+          ]}
         />
 
         <Text  style={styles.label}>Select a zone</Text>
-        <DropDownPicker  
-          open={open2}
-          value={value2}
-          items={items2}
-          setOpen={setOpen2}
-          setValue={setValue2}
-          setItems={setItems2}
-          defaultValue={selectedZone}
-          onChangeValue={(value) => handleZoneSelect(value)}
-          containerStyle={styles.dropdownContainer}
-          style={styles.dropdown}
-          textStyle={styles.dropdownText}
-          arrowColor="#000"
-          zIndex={1500}
-          elevation={2}
-        />
+        <DropDownPicker
+        open={open2}
+        value={value2}
+        items={items2}
+        setOpen={setOpen2}
+        setValue={setValue2}
+        setItems={setItems2}
+        defaultValue={selectedZone}
+        onChangeValue={(value) => handleZoneSelect(value)}
+        containerStyle={styles.dropdownContainer}
+        style={[
+          styles.dropdown,
+          { marginBottom: open2 ?  items2.length*40 : 0 } // Set the desired margin bottom values
+        ]}
+        textStyle={styles.dropdownText}
+        arrowColor="#000"
+      />
+
 
         <Text   style={styles.label}>Select a restaurant</Text>
         <DropDownPicker 
@@ -187,11 +187,12 @@ export default function App() {
           onChangeValue={(newValue) => setValue3(newValue)}
           onSelectItem={(value) => handleRestaurantSelect(value)}
           containerStyle={styles.dropdownContainer}
-          style={styles.dropdown}
           textStyle={styles.dropdownText}
           arrowColor="#000"
-          zIndex={1000}
-          elevation={1}
+          style={[
+            styles.dropdown,
+            { marginBottom: open3 ?  items3.length*10 : 40 } // Set the desired margin bottom values
+          ]}
         />
 
         <View style={styles.mapContainer}>
